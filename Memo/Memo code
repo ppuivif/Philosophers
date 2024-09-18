@@ -1,0 +1,30 @@
+
+La fonction check_arguments() (fichier parsing.c) :
+	- cette fonction effectue le parsing,
+	- elle vérifie le nombre d'arguments qui doit être compris entre 5 et 6 (6 dans le cas
+	où l'option de nombre de repas à atteindre est donnée),
+	- la fonction fait appel à la fonction check_and_convert_arguments() pour la conversion
+	des strings en int.
+
+-----------------------------------------------------------------------------------------------
+
+La fonction check_and_convert_arguments() (fichier parsing.c) :
+	- cette fonction convertit les arguments fournis sous forme de strings en int, puis
+	initialise la structure data,
+	- elle parcourt les arguments et pour chacun d'entre eux fait appel à la fonction
+	ft_atoi_long_positive() qui va retourner un entier,
+	- si l'entier est négatif :
+		- car la string donnée en argument est 0,
+		- ou commence par -,
+		- ou contient un caractère qui n'est pas un digit,
+		- ou est inférieur à INT_MIN,
+		- ou est supérieur à INT_MAX,
+	alors un message d'erreur est affiché puis exit.
+	- si l'entier est positif, l'argument est valide et la fonction init_data() est appelée
+	pour permettre d'initialiser la structure data.
+NB : dans la fonction init_data(), la variable meals_number est initialisée à 0 si la valeur
+correspondante n'est pas fournie en argument. 
+
+-----------------------------------------------------------------------------------------------
+
+

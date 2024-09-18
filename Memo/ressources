@@ -1,0 +1,9 @@
+
+
+visualizer :
+
+https://github.com/nafuka11/philosophers-visualizer?tab=readme-ov-file
+
+
+flag :
+valgrind --tool=helgrind

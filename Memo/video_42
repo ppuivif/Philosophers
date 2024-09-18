@@ -1,0 +1,482 @@
+https://www.youtube.com/watch?v=UGQsvVKwe90
+
+-----------------------------------------------------------------------------------------------
+
+1'02
+
+Function get_time_of_day :
+
+The function allows to get the current time with high precision.
+It returns the time in seconds and microseconds.
+It accepts 2 arguments :
+	- a pointer to a struct called time,
+	- a pointer to extract time zone, which is not really used.
+It saves number of seconds past since first January 1970 and number of microseconds passed since
+last second.
+In success it returns zero and other value when there is an error.
+
+Examples :
+
+// struct timeval {
+//	time_t		tv_sec;	// seconds from January 1, 1970
+//	suseconds_t	tv_usec; // microseconds
+// }
+// 1 second = 1 000 000 microseconds
+// 1 second = 1 000 milliseconds
+
+
+// int	gettimeofday(struct timeval *tv, struct timezone *tz);
+
+
+void	example_1()
+{
+	struct timeval	time;
+	
+	if (gettimeofday(&time, NULL) // to get the current time
+		return;
+	printf("%ld seconds\n", time.tv_sec);
+	// number of seconds passed since first January 1970
+
+	printf("%ld microseconds\n", time.tv_usec);
+	// number of microseconds passed since last second
+	
+	printf("%ld years passed since 1970\n\n", time.tv_sec / 60 / 60 / 24 / 365);
+	// (num_of_seconds / 60 seconds / 60 minutes / 24 hours / 350 days)
+}
+
+win64_t	get_time(void) // returns time in milliseconds
+{
+	struct timeval	tv;
+	
+	if (gettimeofday(&time, NULL)
+		return (0);
+	return ((tv.tv_sec * (wint64_t)1000) + (tv.tv_usec / 1000));
+}
+
+void	example_2()
+{
+	wint64_t	start_time;
+	wint64_t	now;
+
+	start_time = get_time();
+	usleep(10000); // accepts value in microseconds with 10 000 microseconds = 10 milliseconds
+	now = get_time();
+	printf("%ld milliseconds passed since the start\n", now - start_time);
+}
+
+// This previous version works but a problem could happen if value passed to usleep is deeper.
+// So see another version :
+
+void	example_2()
+{
+	struct timeval	start_time;
+	struct timeval	end_time;
+	long		requested_sleep_time;
+	long		actual_sleep_time;
+
+	requested_sleep_time = 200 * 1000; // 200 milliseconds
+	gettimeofday(&start_time, NULL);
+	usleep(requested_sleep_time);
+	gettimeofday(&end_time, NULL);
+	actual_sleep_time = (end_time.tv_sec - start_time.tv_sec) * 1 000 000 + \
+	(end_time.tv_usec - start_time.tv_usec); 
+	
+	printf("requested sleep time : %ld microseconds\n", requested_sleep_time);
+	printf(actual sleep time : %ld microseconds\n", actual_sleep_time);
+}
+
+int	main()
+{
+	// example_1();
+	example_2();
+	
+	return(0);
+}
+
+
+
+}
+
+For philosopher it will be necessary to code his own function sleep because the real function
+is not precise enough.
+
+-----------------------------------------------------------------------------------------------
+
+4'47
+
+Threads : it's a separate flow that executes tasks concurrently.
+For example, if you want to play a game while your laptop is downloading a movie it is possible
+thanks to multi-? on your laptop which can manage multiple tasks in one time. This is also
+possible thanks to a thread. So if you want that 2 operations to be going at the same time in
+your program then we use threads. This is necessary for philosophers because in the project
+subject that every single philosopher needs to be a separate thread because all the philosophers
+need to exist at the same time.
+
+Examples :
+
+void	*print_hello(void *arg)
+{
+	int	i;
+	
+	i = 0;
+	while (i < 100)
+	{
+		printf("Hello\n");
+		i++;
+		usleep(10000);
+	}
+	return (NULL);
+}
+
+void	*print_world(void *arg)
+{
+	int	i;
+	
+	i = 0;
+	while (i < 100)
+	{
+		printf("\t\tworld\n");
+		i++;
+		usleep(10000);
+	}
+	return (NULL);
+}
+
+void	example_1()
+{
+	print_hello(NULL);
+	print_world(NULL);
+}
+
+int	main()
+{
+	example_1();
+	return (0);
+}
+
+In this first example, the program first prints 100 times hello and then world because there
+is only one thread, the main one. The 2 functions executed one after another.
+
+void	example_2()
+{
+	pthread_1	t1;
+	pthread_2	t2;
+
+	if (pthread_create(&t1, NULL, print_hello, NULL)
+		exit(1);
+	if (pthread_create(&t2, NULL, print_world, NULL)
+		exit(1);
+	if (pthread_join(t1, NULL)
+		exit(1);
+	if (pthread_join(t2, NULL)
+		exit(1);
+}
+
+In this second example, we have 2 threads. In one of them, we assigned function print hello
+and in in the other, print world.
+The printing is mixed. Sometimes it prints one after another, sometimes it prints twice.
+This is because threads do not work at the same speed. Sometimes, one of them works faster,
+sometimes another is faster.
+
+pthread_create : 
+	- pthread is a built-in structure which comes with header pthread.h
+	- pthread_create accept four arguments :
+		- a pointer to a pthread t,
+		- the attributes that we can use for the function, which won't be used with
+		philosophers project,
+		- the function that we want to assign to the thread,
+		- the arguments that we can pass to the assigned function.
+	- the assigned function must return a void pointer, and must take a void pointer (which
+	could be cast for something else).
+After pthread_create, we have 2 threads running at the same time the main thread.
+After we have create 2 threads, we have 2 options :
+	- either we need to join them back to the main thread,
+	- or we need to detach them.
+If we want to join the threads, the main thread needs to wait until these 2 threads finish and
+only afterwards our main thread can finish.
+If we want to detach them, this is another function that we can use. The main thread doesn't
+have to wait.
+In the end we need to free all the values that we have marked.
+pthread_join accepts pthread variable and it's possible to save the return value from the
+function that we've attached to the thread.
+
+
+void	*routine(void *arg)
+{
+	int	*num;
+	int	i;
+	
+	num = (int *)arg;
+	i = 0;
+	while (i < 100 000)
+	{
+		(*num)++;
+		i++;
+	}
+	return (NULL);
+}
+
+void	exit_on_error(data_t *data, int exit_code)
+{
+	free(data);
+	exit(exit_code);
+
+}
+
+void	example_3()
+{
+	int	*num;
+	pthread_1	t1;
+	pthread_2	t2;
+	
+	num = malloc(sizeof(int));
+	if (num == NULL)
+		exit(1);
+	*num = 0;
+	if (pthread_create(&t1, NULL, routine, num)
+		exit_on_error(num, 2);
+	if (pthread_create(&t2, NULL, routine, num)
+		exit_on_error(num, 2);
+	if (pthread_join(t1, NULL)
+		exit_on_error(num, 3);
+	if (pthread_join(t2, NULL)
+		exit_on_error(num, 3);
+	printf("Num : %d\n", *num);
+
+}
+
+As the routine function increase num with 100 000 in the thread1 and 100 000 in the thread2,
+we should have a result of 200 000.
+However, we have a result of almost half : it's the problem of data races.
+The 2 threads access to the same variable, and so the same memory. If a thread execute faster
+than the other, it could catch up the other. The 2 threads could mixed up the result.
+It should never happen in the program. There are tools to check these data races.
+It is necessary to use mutex to avoid data races.
+
+-----------------------------------------------------------------------------------------------
+
+13'10
+
+mutex :
+Mutex is a locker.
+
+Example :
+
+typedef struct	data_s
+{
+	int		num;
+	pthread_mutex	mutex;
+} data_t;
+
+data_t	*init_data()
+{
+	data_t	*data;
+
+	data = malloc(sizeof(data_t));
+	if (data == NULL)
+		exit(1);
+	data_num = 0;
+	pthread_mutex_init(&data->mutex, NULL);
+	return (data);
+}
+
+void	free_data(data_t *data)
+{
+	pthread_mutex_destroy(&data->mutex);
+	free(data);
+}
+
+
+void	exit_on_error(data_t *data, int exit_code)
+{
+	free(data);
+	exit(exit_code);
+
+}
+
+void	*routine(void *arg)
+{
+	data_t	*data;
+	int	i;
+	
+	data = (data_t *)arg;
+	i = 0;
+	while (i < 10 000 000)
+	{
+		pthread_mutex_lock(&data->mutex);//locked
+		(data->num)++;
+		pthread_mutex_unlock(&data->mutex);
+		i++;
+	}
+	return (NULL);
+}
+
+void	example_3()
+{
+	data_t		*data;
+	pthread_1	t1;
+	pthread_2	t2;
+	
+	data = init_data();
+
+	if (pthread_create(&t1, NULL, routine, num)
+		exit_on_error(num, 2);
+	if (pthread_create(&t2, NULL, routine, num)
+		exit_on_error(num, 2);
+
+	if (pthread_join(t1, NULL)
+		exit_on_error(num, 3);
+	if (pthread_join(t2, NULL)
+		exit_on_error(num, 3);
+		
+	printf("Num : %d\n", *num);
+	free_data(data);
+
+}
+
+-----------------------------------------------------------------------------------------------
+
+2 cases in the project :
+	- if we have even number of philosophers,
+		time_to_die =(at least) time_to_eat + time_to_sleep + 10(this value need to be
+		adjusted according to number of philosophers because laptop could run too slowly)
+	- if we have odd number of philosophers,
+		time_to_die =(at least) time_to_eat*2 + time_to_sleep + 10(this value need to be
+		adjusted according to number of philosophers)
+
+Example of display :
+
+./philo 2 410 200 200 5
+
+0 1 has taken a fork
+0 1 has taken a fork
+0 1 is eating
+200 1 is sleeping
+200 2 has taken a fork
+200 2 has taken a fork
+200 2 is eating
+400 2 is sleeping
+400 1 is thinking
+400 1 has taken a fork
+
+
+
+First save the current time of the program (the starting time of the program).
+Whenever we want to print some timestamp, we obtain the current again and we substract it from
+the starting time of the program.
+
+NB : see simulazer nafuka11 on github
+https://github.com/nafuka11/philosophers-visualizer?tab=readme-ov-file
+
+NB : time to think is very tiny because it isn't given in the arguments.
+
+To confirm : update last meal time when end of meal or beginning to sleep
+
+3 ways of synchronization to avoid deadlock :
+Deadlock is the situation when mutex are locked and threads are waiting for them to be available.
+
+	- odd philosophers are sleeping at the beginning of the program for time to eat
+	divide by two. So we're sure that half of philosophers got the forks. The last one
+	will be altering from one to another. If there are even number of philosophers, there
+	will bee only 2 groups.
+	- half of philosophers (odd for exemple) start taking forks from the right side and
+	the other half of philosophers (even so) start taking the forks from left side.
+	- all philosophers take from right fork, except for last one philosopher.
+	
+-----------------------------------------------------------------------------------------------
+
+30'06
+
+check death : philosophers shouldn't be able to communicate with each other.
+
+Philosophers can't check themselves if they are dead or not. So it's necessary to have another
+thread to check constantly the philosophers if somebody died or not (last_eat_time). If somebody
+died, this thread needs to go to every single philosopher thread and let them know like you need
+to stop because somebody died (via a flag).
+It could have another thread which will check if everybody is full. This is going to be executed
+only if we have this option.
+
+It could be possible to have a flag in the main struct. If a philosopher dies, he will access
+this flag and switch it. Then each philosopher could check this flag in the main struct and
+stop their routine. But this way doesn't match with the subject. 
+
+-----------------------------------------------------------------------------------------------
+
+problems which could happen :
+
+- if there is only one philosopher : he will have only one fork and he won't be able to eat.
+
+- we sould also have a mutex for printf for printing timestamps and messages because printf first
+write to a buffer. At the same time a philosopher can try to run the right to buffer. We will have
+somewhat like mixed printing.
+
+- we should create our own sleep function because sleep function isn't precise enough.
+
+- we should avoid infinite loop
+
+void	wait(long time_to_sleep)
+{
+	long	wake_up_time;
+	
+	wake_up_time = get_time() + time_to_sleep;
+	while (get_time() < wake_up_time)
+	{
+		infinite loop possible
+		solution : usleep with a few microseconds (100 - 500?)
+		so the function will wake up and check the time
+	}
+}
+
+- philosophers should not die when they're eating. We should have a check in the function :
+
+bool	philo_died(t_philo *philo)
+{
+	bool	result;
+	t_data	*data;
+	
+	data = philo->data;
+	result = false;
+	if (get_time() - get_last_eat_time(philo) > get_die_time(data)
+
+>>>		&& get_philo_state(philo) != EATING)
+
+	{
+		set_philo_state(philo, DEAD);
+		result = true;
+	}
+	return (result);
+}
+	
+- check data races with valgrind : valgrind --tool=helgrind
+This flag could be add to the Makefile
+
+- 
+
+
+bool	get_keep_iter(t_data *data)
+{
+	bool	keep_iterating;
+	
+	pthread_mutex_lock(&data->mut_keep_iter);
+	keep_iterating = data->keep_iterating;
+	pthread_mutex_unlock(&data->mut_keep_iter);
+	return(keep_iterating);
+}
+
+
+
+- another function to get number of philo :
+
+int	get_nb_philos(t_data *data)
+{
+	int	nb_philos;
+	
+	pthread_mutex_lock(&data->mut_nb_philos);
+	nb_philos = data->nb_philos;
+	pthread_mutex_unlock(&data->mut_nb_philos);
+	return(nb_philos);
+}
+
+
+
+

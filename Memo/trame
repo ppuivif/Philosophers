@@ -1,0 +1,105 @@
+
+libft non autorisée
+
+nom de l'exécutable à générer : philo
+
+repertoire pour le repo : philo/
+
+-----------------------------------------------------------------------------------------------
+
+Format de l'input :
+
+./philosophers 5 800 200 200 7
+
+5 : number of philosophers
+800 : time_to_die
+200 : time_to_eat
+200 : time_to_sleep
+7 : number_of_times_each_philosopher_must_eat (option)
+
+-----------------------------------------------------------------------------------------------
+
+Vérification des arguments (le nom des arguments est proposé / imposé par le sujet) :
+	- vérification du nombre d'arguments (4 minimum, voire 5 avec l'option) :
+		- le nombre de philosophers (number_of_philosophers),
+		- le délai avant de mourir (time_to_die) en ms,
+		- la durée du repas (time_to_eat) en ms,
+		- la durée du sommeil (time_to_sleep) en ms,
+		- en option, le nombre de fois où chaque philosopher doit manger
+		(number_of_times_each_philosopher_must_eat).
+	- les arguments ne doivent pas être vides ("").
+	- les arguments doivent être des int.
+	- vérifier l'absence d'overflow (pas de spécification particulière dans le sujet
+	concernant les valeurs max : int ou long int).
+	- les arguments doivent être supérieurs à 0. 
+	- le nombre max de philosopher est 200 (non spécifié dans le sujet, seult dans le
+	sujet de correction). 
+
+-----------------------------------------------------------------------------------------------
+
+attribuer un index à chaque philosopher de 1 au nombre total de philosophers (requis par le
+sujet)
+
+-----------------------------------------------------------------------------------------------
+
+Affichage :
+
+Chaque changement d'état d'un philosopher dot être formaté de la façon suivante :
+	- timestamp_in_ms X a pris une fourchette,
+	- timestamp_in_ms X mange,
+	- timestamp_in_ms X dort,
+	- timestamp_in_ms X pense,
+	- timestamp_in_ms X est mort.
+X étant l'index du philosopher et timestamp_in_ms étant l'horodatage en cours.
+Un message relatif au changement d'état doit s'afficher, sans se superposer avec un autre.
+L'annonce de la mort d'un philosopher ne doit pas prendre plus de 10 ms à compter de
+l'évènement.
+
+-----------------------------------------------------------------------------------------------
+
+A confirmer : le traitement sera différent en fonction du nombre de philosophers.
+Si le nombre total de philosophers est pair ou impair.
+L'idée serait de faire commencer par faire manger les philos impairs puis les philos pair. 
+
+-----------------------------------------------------------------------------------------------
+
+L'exécution de chaque étape (manger, dormir, penser) est verifiée par une fonction :
+	1- calcul du temps écoulé depuis le debut de l'étape,
+	2- comparaison de ce temps avec le délais fourni en argument.
+
+-----------------------------------------------------------------------------------------------
+
+Définir une routine :
+	- quand il ne dort pas et qu'il ne mange pas, le philospher vérifie si les fourchettes
+	sont disponibles.
+	- le philosopher ne sait pas quand il meurt.
+	- le processus principal doit vérifier si l'un des philosophers est mort pour mettre
+	fin aux processus.
+	- chaque philosopher dispose de sa propre fourchette (une variable) et vérifie si la
+	fourchette de son voisin est disponible ou non (via un pointeur) : a priori non
+	
+	
+-----------------------------------------------------------------------------------------------	
+	
+Un thread est un outil qui permet de gérer plusieurs actions. Ce n'est pas un processus.
+
+Check de la mort avant et apres chaque action.
+
+Les philo ne prennent les fourchettes que lorsqu'elles sont toutes les 2 disponibles.
+
+La routine regroupe la succession des différentes actions.
+
+Attention quand de tres nombreux philos, décalage dans la création (pb de temps ?).
+
+Une structure données, une structure philo, une structure fork.
+
+Pour éviter que tous les philos lock une fourchette en même temps, leur faire prendre une
+fourchette droite pour les pairs et gauche pour les impairs par exemple, à confirmer.
+
+ 
+
+-----------------------------------------------------------------------------------------------
+
+Recoder la fonction usleep pour obtenir une exécution plus précise en temps.
+
+-----------------------------------------------------------------------------------------------

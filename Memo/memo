@@ -1,0 +1,94 @@
+PHILOSOPHERS
+
+
+Le projet est destiné à simuler l'exécution de plusieurs processus simultanés.
+Chaque processus s'exécute par étapes. Les étapes ne peuvent s'exécuter que si aucune étape
+d'un autre processus n'est en cours. L'objectif est d'optimiser le fonctionnement global des
+programmes en permettant leur exécution sans mobiliser démesurément les capacités de la machine.
+
+/nfs/homes/ppuivif/Documents/ECOLE_42/42_COMMON_CORE/09-PHILOSOPHERS/processus_execution
+
+-----------------------------------------------------------------------------------------------
+
+Un processus (ou thread) est représenté par un philosopher.
+Les étapes sont représentées par les tâches à accomplir par les philosophers, à savoir manger,
+penser, dormir.
+La succession des tâches est assimilée à une routine.
+
+Chaque philosopher n'exécute qu'une tâche à la fois.
+Pour manger, il doit disposer d'une fourchette dans sa main droite et d'une fourchette dans sa
+main gauche.
+Avant de manger, il doit se saisir des fourchettes, ce qui les rend indisponibles pour les
+philosophers situés à proximité immédiate.
+Aprés avoir terminer de manger, le philosopher repose les fourchettes, ce qui permet aux
+philosophers suivants de s'en saisir.
+Ce même philosopher peut ensuite dormir. Une fois réveillé, il peut ensuite penser.
+
+Les philosophers ne communiquent pas entre eux.
+
+Ils ne doivent pas mourir de faim, au risque de mourir.
+
+La simulation prend fin lorsqu'un philosopher meurt de faim.
+
+-----------------------------------------------------------------------------------------------
+
+Les paramètres d'entrée sont :
+	- le nombre de philosophers (numbers of philosophers),
+	- le délai avant de mourir en ms (time_to_die) : ce temps est décompté à partir de leur
+	dernier repas ou à partir du début de la simulation. Si un philosopher ne mange pas avant
+	ce délai, il meurt.
+	- la durée du repas en ms (time_to_eat),
+	- la durée du sommeil en ms (time_to_sleep),
+	- en option, le nombre de fois où chaque philosopher doit manger (number_of_times_each_
+	philosopher_must_eat) : si tous les philosophers ont atteint cet objectif, la simulation
+	prend fin. Si ce parmètre n'est pas donné, la simulation prend fin à la mort d'un
+	philosopher.
+
+Chaque philosopher dispose d'un index.
+
+Chaque changement d'état d'un philosopher dot être formaté de la façon suivante :
+	- timestamp_in_ms X a pris une fourchette,
+	- timestamp_in_ms X mange,
+	- timestamp_in_ms X dort,
+	- timestamp_in_ms X pense,
+	- timestamp_in_ms X est mort.
+X étant l'index du philosopher et timestamp_in_ms étant l'horodatage en cours.
+Un message relatif au changement d'état doit s'afficher, sans se superposer avec un autre.
+L'annonce de la mort d'un philosopher ne doit pas prendre plus de 10 secondes à compter de
+l'évènement.
+
+-----------------------------------------------------------------------------------------------
+
+Rêgles générales :
+	- les variables globales sont interdites,
+
+NB : point de la correction à éclaircir	
+"Check if there is any global variable which is used to manage the shared
+resources among the philosophers."
+
+	- prévoir un mutex permettant d'éviter à un philosopher de mourir et de commencer à
+	manger en même temps,
+	- les tests ne doivent pas s'effectuer sur plus de 200 philosophers,
+	- les délais donnés en paramètres au cours des tests ne doivent pas être inférieurs
+	à 60 ms,
+	- test 1 800 200 200 : le philosopher ne doit pas manger et doit mourir,
+	- test 5 800 200 200 : aucun philosopher ne doit mourir,
+	- test 5 800 200 200 7 : aucun philosopher ne doit mourir et la simulation doit prendre
+	fin quand tous les philosophers ont mangé 7 fois,
+	- test 4 410 200 200 : aucun philosopher ne doit mourir,	 
+	- test 4 310 200 100 : un philosopher doit mourir,
+	- tests avec 2 philosophers et plusieurs délais : une mort relayée après plus de 10ms
+	n'est pas acceptable,
+
+-----------------------------------------------------------------------------------------------
+
+Règles spécifiques au mandatory :
+	- chaque philosopher est un thread,
+	- il y a une fourchette entre chaque paire de philosophers, donc une fourchette à la
+	droite et une fourchette à la gauche de chaque philosopher.
+	- si il n'y a qu'un seul philosopher, il n'y a qu'une fourchette.
+	- pour éviter la multiplication des fourchettes, il faut protéger le statut des
+	fourchettes (disponible ou non) par un mutex.
+	
+  
+
