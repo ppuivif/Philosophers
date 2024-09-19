@@ -6,7 +6,7 @@
 /*   By: ppuivif <ppuivif@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 07:47:02 by ppuivif           #+#    #+#             */
-/*   Updated: 2024/07/23 12:02:42 by ppuivif          ###   ########.fr       */
+/*   Updated: 2024/09/19 08:47:45 by ppuivif          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,20 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		return ((void *) str);
 	}
 	return (NULL);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] != '\0' || s2[i] != '\0')
+	{
+		if (s1[i] < s2[i] || s1[i] > s2[i])
+		{
+			return (s1[i] - s2[i]);
+		}
+		i++;
+	}
+	return (0);
 }

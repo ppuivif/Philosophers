@@ -6,7 +6,7 @@
 /*   By: ppuivif <ppuivif@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 11:51:44 by ppuivif           #+#    #+#             */
-/*   Updated: 2024/09/17 18:12:55 by ppuivif          ###   ########.fr       */
+/*   Updated: 2024/09/19 15:06:34 by ppuivif          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ int	philos_struct_init(t_data *data, t_fork *fork, t_philo **philo)
 			(*philo)[i].left_fork = &fork[i + 1];
 		else if (data->philo_nmemb > 1)
 			(*philo)[i].left_fork = &fork[0];
-		(*philo)[i].philo = philo;//to complete
 		(*philo)[i].data = data;
 		(*philo)[i].fork = fork;
 		i++;

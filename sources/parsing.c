@@ -6,7 +6,7 @@
 /*   By: ppuivif <ppuivif@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 09:09:41 by ppuivif           #+#    #+#             */
-/*   Updated: 2024/09/17 18:39:34 by ppuivif          ###   ########.fr       */
+/*   Updated: 2024/09/19 09:11:46 by ppuivif          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,9 @@ static void	init_data(int index, int valid_value, t_data *data)
 static int	ft_atoi_long_positive(char *str)
 {
 	int			i;
-//	int			sign;
 	long int	nb;
 
 	i = 0;
-//	sign = 1;
 	nb = 0;
 	while (ft_isspace(str[i]) == true)
 		i++;
@@ -77,7 +75,7 @@ is not correct\n", 2);
 	}
 }
 
-void		check_arguments_and_fill_data_struct(int argc, char **argv, \
+void	check_arguments_and_fill_data_struct(int argc, char **argv, \
 			t_data *data)
 {
 	if (argc < 5 || argc > 6)
